@@ -1,6 +1,3 @@
-import copy
-import re
-
 with open('day9.txt') as f:
     input = list(map(lambda a: int(a), f.read().strip().split('\n')))
 
