@@ -1,4 +1,3 @@
-import json
 import re
 
 with open('day18.txt') as f:
@@ -27,7 +26,7 @@ def execute2(line):
             break
         first_piece = line[:m.start()]
         third_piece = line[m.end():]
-        line = first_piece + str(execute(m.group(0).replace('(', '').replace(')', ''))) + third_piece
+        line = first_piece + str(execute(m.group(0))) + third_piece
 
     return execute(line)
 
