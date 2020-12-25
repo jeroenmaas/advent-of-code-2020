@@ -1,4 +1,6 @@
+import json
 import re
+from random import choice
 
 with open('day19.txt') as f:
     input = f.read().strip().split('\n\n')
@@ -34,6 +36,9 @@ def test_rule(rule, text):
     type = rule['type']
     value = rule['value']
     if type == 'letter':
+        if len(text) == 0:
+            return [False, ""]
+
         return [text[0] == value, text[1:]]
     elif type == 'lookup':
         text_left = text
@@ -43,20 +48,40 @@ def test_rule(rule, text):
                 return [False, ""]
         return [True, text_left]
     elif type == 'or':
+        matches = []
         for lookups in value:
             match, text_left = test_rule({'type': 'lookup', 'value': lookups}, text)
             if match:
-                return [match, text_left]
+                matches.append([match, text_left])
 
-        return [False, ""]
+        if len(matches) == 0:
+            return [False, ""]
+
+        return choice(matches)
     else:
         print('unknown type')
         exit()
 
-c = 0
-for t in to_test:
-    match, left = test_rule(rules[0], t)
-    if match and len(left) == 0:
-        c += 1
+def find_matches(rules):
+    match_ids = []
+    for i, t in enumerate(json.loads(json.dumps(to_test))):
+        match, left = test_rule(rules[0], t)
+        if match and len(left) == 0:
+            match_ids.append(i)
+    return match_ids
 
-print('part1: ' + str(c))
+print('part1: ' + str(len(find_matches(rules))))
+
+rules[8] = {'type': 'or', 'value': [[42], [42, 8]]}
+rules[11] = {'type': 'or', 'value': [[42, 31], [42, 11, 31]]}
+
+# Why bother optimizing test_rule function with multiple input/outputs if we can just brute force our way
+total_matches = set()
+for i in range(100):
+    total_matches.update(find_matches(rules))
+
+print('part2: ' + str(len(total_matches)))
+
+#
+# print('part2: ' + str(len(find_matches(rules))))
+# # total_matches.update(find_matches(rules))
