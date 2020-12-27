@@ -1,6 +1,6 @@
 import json
 import math
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 import numpy as np
 
@@ -48,9 +48,6 @@ while(found_allergien):
             known_ingredients[ing] = all
             found_allergien = True
 
-            print('ingredient: ', ingredients_in_all_list[0])
-            print('allergien: ', all)
-
     for all in known_ingredients:
         if all in possible_ingredients_for_allergien:
             del possible_ingredients_for_allergien[all]
@@ -67,3 +64,7 @@ for item in ingedients_list:
             occurances_unknown_ingredient += 1
 
 print('part1: ', occurances_unknown_ingredient)
+
+
+sorted_dict = OrderedDict(sorted(known_ingredients.items(), key=lambda t: t[1]))
+print('part2: ', ','.join(sorted_dict))
